@@ -1,67 +1,61 @@
-import string
-import random
-import time
-
-
 class bstree:
     def __init__(self):
-        self.hi = None
+        self.value = None
+        self.left = None
+        self.right = None
 
     def size(self):
-        if (self.tree()):
-            return 1 + self.left.size() + self.right.size()
-        return 0
+        sum = 1 if self.tree() else 0
+
+        if self.left is not None:
+            sum += self.left.size()
+
+        if self.right is not None:
+            sum += self.right.size()
+
+        return sum
 
     def tree(self):
-        # This counts as a tree if it has a field self.value
-        # it should also have sub-trees self.left and self.right
-        return hasattr(self, 'value')
+        return self.value is not None
 
     def insert(self, value):
         if self.tree():
-            print("true")
-            # TODO if tree is not NULL then insert into the correct sub-tree
-            if self.value == value:
-                return False
-            elif self.value < value:
-                self.right = bstree()
-                self.right.insert(value)
-            else:
-                self.left = bstree()
+            if self.value > value:
+                if self.left is None:
+                    self.left = bstree()
                 self.left.insert(value)
+            else:
+                if self.right is None:
+                    self.right = bstree()
+                self.right.insert(value)
         else:
-            print("false")
-            # TODO otherwise create a new node containing the value
             self.value = value
-            print("_______________")
-            # print("value: " + self.value)
 
     def find(self, val):
-        if self.value == val:
+        if self.value is None:
+            return False
+        elif self.value == val:
             return True
-        elif self.value < val:
-            if self.right == None:
-                return False
+        elif self.value > val and self.left is not None:
+            return self.left.find(val)
+        elif self.right is not None:
             return self.right.find(val)
         else:
-            if self.left == None:
-                return False
-            return self.left.find(val)
+            return False
 
-    # You can update this if you want
     def print_set_recursive(self, depth):
-        if (self.tree()):
+        if self.tree():
             for i in range(depth):
                 print(" ", end='')
             print("%s" % self.value)
-            if hasattr(self, "left"):
+            if self.left is not None:
                 self.left.print_set_recursive(depth + 1)
-            if hasattr(self, "right"):
+            if self.right is not None:
                 self.right.print_set_recursive(depth + 1)
 
     # You can update this if you want
     def print_set(self):
-        print("Tree:\n")
+        print("Tree:")
         self.print_set_recursive(0)
 
     def print_stats(self):
@@ -69,8 +63,16 @@ class bstree:
         print("Placeholder - remove this print statement")
 
 
-hi = bstree()
-lis = ["k", "b", "c", "d", "e", "m", "n", "f", "z"]
-for i in range(len(lis)):
-    hi.insert(lis[i])
-hi.print_set()
+tree = bstree()
+
+lis = [5, 3, 7, 2, 9, 4, 8]
+
+for num in lis:
+    tree.insert(num)
+
+tree.print_set()
+
+for num in lis:
+    print(tree.find(num))
+
+print(tree.find(-10))
